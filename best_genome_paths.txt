@@ -1,0 +1,10 @@
+/anvil/scratch/x-aperdomo/results/701515_split_250/AKAM/lr_0.001/max_genome_10000/island_10/0/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/AKAM/lr_0.001/max_genome_10000/island_10/2/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/AKAM/lr_0.001/max_genome_10000/island_10/3/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/AKAM/lr_0.001/max_genome_10000/island_10/4/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/AKAM/lr_0.001/max_genome_10000/island_10/5/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/AKAM/lr_0.001/max_genome_10000/island_10/9/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/AKAM/lr_0.001/max_genome_10000/island_10/16/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/NDSN/lr_0.001/max_genome_10000/island_10/4/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/NDSN/lr_0.001/max_genome_10000/island_10/11/rnn_genome_8.bin
+/anvil/scratch/x-aperdomo/results/701515_split_250/NDSN/lr_0.001/max_genome_10000/island_10/12/rnn_genome_8.bin

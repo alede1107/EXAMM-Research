@@ -1,0 +1,7 @@
+*.output
+*.error
+*.bin
+results/
+final_results/
+__pycache__/
+*.pyc
