@@ -35,7 +35,7 @@ for name in stock_names:
 #SBATCH -e /home/x-aperdomo/examm_scripts/examm_%x_%j.error
 #SBATCH --mail-user={EMAIL}
 #SBATCH --mail-type=ALL
-#SBATCH -t 2:30:00
+#SBATCH -t 00:30:00
 #SBATCH -p {PARTITION}
 #SBATCH -N 1
 #SBATCH -n 8
