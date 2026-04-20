@@ -2,8 +2,10 @@
 
 script_path="/home/x-aperdomo/examm_scripts"
 file_type="250"
-MAX_QUEUED=400
+MAX_QUEUED=100
 USER=x-aperdomo
+RESULTS_ROOT="/anvil/projects/x-cis251123/aperdomo/results/701515_split_250"
+MIN_LINES=9800
 
 STOCKS=(
     'HOLX' 'ATO' 'KIM' 'NVR' 'DPZ' 'JBHT' 'DECK' 'FRT' 'KMX' 'EXR'
@@ -25,8 +27,17 @@ wait_for_queue_space() {
 }
 
 count=0
+skipped=0
 for DATASET in "${STOCKS[@]}"; do
     for FOLDER in {0..24}; do
+        fitlog="${RESULTS_ROOT}/${DATASET}/lr_0.001/max_genome_10000/island_10/${FOLDER}/fitness_log.csv"
+        if [ -f "$fitlog" ]; then
+            lines=$(wc -l < "$fitlog")
+            if [ "$lines" -ge "$MIN_LINES" ]; then
+                skipped=$((skipped+1))
+                continue
+            fi
+        fi
         wait_for_queue_space
         script="${script_path}/${file_type}/${file_type}_${DATASET}_${FOLDER}.sh"
         if [ ! -f "$script" ]; then
@@ -38,4 +49,4 @@ for DATASET in "${STOCKS[@]}"; do
     done
 done
 
-echo "Submitted $count jobs total"
+echo "Submitted $count jobs, skipped $skipped already-complete folds"

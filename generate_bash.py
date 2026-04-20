@@ -22,8 +22,8 @@ ACCOUNT = "cis251123"
 PARTITION = "standard"
 EMAIL = "dp996@njit.edu"
 EXAMM = "/home/x-aperdomo/code/EXAMM-Extended"
-DATAPATH = "/anvil/scratch/x-aperdomo/datasets/701515_split"
-RESULTS_ROOT = "/anvil/scratch/x-aperdomo/results"
+DATAPATH = "/anvil/projects/x-cis251123/aperdomo/datasets/701515_split"
+RESULTS_ROOT = "/anvil/projects/x-cis251123/aperdomo/results"
 
 for name in stock_names:
     for folder in range(25):
@@ -35,7 +35,7 @@ for name in stock_names:
 #SBATCH -e /home/x-aperdomo/examm_scripts/examm_%x_%j.error
 #SBATCH --mail-user={EMAIL}
 #SBATCH --mail-type=ALL
-#SBATCH -t 00:30:00
+#SBATCH -t 02:30:00
 #SBATCH -p {PARTITION}
 #SBATCH -N 1
 #SBATCH -n 8

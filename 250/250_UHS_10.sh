@@ -6,7 +6,7 @@
 #SBATCH -e /home/x-aperdomo/examm_scripts/examm_%x_%j.error
 #SBATCH --mail-user=dp996@njit.edu
 #SBATCH --mail-type=ALL
-#SBATCH -t 00:30:00
+#SBATCH -t 02:30:00
 #SBATCH -p standard
 #SBATCH -N 1
 #SBATCH -n 8
@@ -16,14 +16,14 @@ STOCK=UHS
 FOLDER=10
 INPUT_PARAMETER="RET VOL_CHANGE BA_SPREAD ILLIQUIDITY sprtrn TURNOVER"
 EXAMM="/home/x-aperdomo/code/EXAMM-Extended"
-DATAPATH="/anvil/scratch/x-aperdomo/datasets/701515_split"
+DATAPATH="/anvil/projects/x-cis251123/aperdomo/datasets/701515_split"
 MAX_GENOME=10000
 NUM_ISLAND=10
 DATASET=701515_split
 lr=0.001
 offset=1
 
-exp_name="/anvil/scratch/x-aperdomo/results/701515_split_250/UHS/lr_$lr/max_genome_$MAX_GENOME/island_$NUM_ISLAND/$FOLDER"
+exp_name="/anvil/projects/x-cis251123/aperdomo/results/701515_split_250/UHS/lr_$lr/max_genome_$MAX_GENOME/island_$NUM_ISLAND/$FOLDER"
 mkdir -p "$exp_name"
 echo "Iteration: $exp_name"
 echo "###-------------------###"
