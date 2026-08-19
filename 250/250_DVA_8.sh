@@ -6,11 +6,12 @@
 #SBATCH -e /home/x-aperdomo/examm_scripts/examm_%x_%j.error
 #SBATCH --mail-user=dp996@njit.edu
 #SBATCH --mail-type=ALL
-#SBATCH -t 02:30:00
-#SBATCH -p standard
+#SBATCH -t 04:00:00
+#SBATCH -p shared
 #SBATCH -N 1
-#SBATCH -n 8
-#SBATCH --mem=48G
+#SBATCH --ntasks=8
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=8G
 
 STOCK=DVA
 FOLDER=8
@@ -23,14 +24,30 @@ DATASET=701515_split
 lr=0.001
 offset=1
 
-exp_name="/anvil/projects/x-cis251123/aperdomo/results/701515_split_250/DVA/lr_$lr/max_genome_$MAX_GENOME/island_$NUM_ISLAND/$FOLDER"
-mkdir -p "$exp_name"
-echo "Iteration: $exp_name"
+final_exp_name="/anvil/projects/x-cis251123/aperdomo/results/701515_split_250_recovery/DVA/lr_$lr/max_genome_$MAX_GENOME/island_$NUM_ISLAND/$FOLDER"
+mkdir -p "$final_exp_name"
+
+JOB_ID_PART="${SLURM_ARRAY_JOB_ID:-$SLURM_JOB_ID}"
+TASK_ID_PART="${SLURM_ARRAY_TASK_ID:-$SLURM_JOB_ID}"
+JOB_TMP="${TMPDIR:-/tmp}/examm_${JOB_ID_PART}_${TASK_ID_PART}_${STOCK}_${FOLDER}"
+LOCAL_DATA="$JOB_TMP/data"
+LOCAL_OUT="$JOB_TMP/out"
+rm -rf "$JOB_TMP"
+mkdir -p "$LOCAL_DATA" "$LOCAL_OUT"
+trap 'rm -rf "$JOB_TMP"' EXIT
+cp "$DATAPATH/DVA_train.csv" "$LOCAL_DATA/"
+cp "$DATAPATH/DVA_val.csv" "$LOCAL_DATA/"
+
+echo "Iteration: $final_exp_name (staged to $TMPDIR)"
 echo "###-------------------###"
 
-time srun "$EXAMM/build/mpi/examm_mpi" \
-    --training_filenames "$DATAPATH/DVA_train.csv" \
-    --test_filenames "$DATAPATH/DVA_val.csv" \
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+
+time srun -n "$SLURM_NTASKS" --cpu-bind=cores "$EXAMM/build/mpi/examm_mpi" \
+    --training_filenames "$LOCAL_DATA/DVA_train.csv" \
+    --test_filenames "$LOCAL_DATA/DVA_val.csv" \
     --time_offset $offset \
     --input_parameter_names $INPUT_PARAMETER \
     --output_parameter_names "RET" \
@@ -50,4 +67,23 @@ time srun "$EXAMM/build/mpi/examm_mpi" \
     --learning_rate $lr \
     --std_message_level INFO \
     --file_message_level INFO \
-    --output_directory "$exp_name"
+    --output_directory "$LOCAL_OUT"
+
+if [ -f "$LOCAL_OUT/fitness_log.csv" ]; then
+    cp "$LOCAL_OUT/fitness_log.csv" "$final_exp_name/"
+fi
+
+copied_best=0
+while IFS= read -r best_global; do
+    cp "$best_global" "$final_exp_name/"
+    copied_best=1
+done < <(find "$LOCAL_OUT" -maxdepth 1 -name 'global_best_genome_*.bin' | sort -V)
+
+if [ "$copied_best" -eq 0 ]; then
+    best_rnn=$(find "$LOCAL_OUT" -maxdepth 1 -name 'rnn_genome_*.bin' | sort -V | tail -n 1)
+    if [ -n "$best_rnn" ]; then
+        cp "$best_rnn" "$final_exp_name/"
+    fi
+fi
+
+echo "Copied fitness_log.csv and best genome bins from $LOCAL_OUT to $final_exp_name"
