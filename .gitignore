@@ -5,3 +5,6 @@ results/
 final_results/
 __pycache__/
 *.pyc
+logs/
+backups/
+*.bak_before_shared
